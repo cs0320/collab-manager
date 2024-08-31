@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "josiah_carberry@brown.edu",
+      "password": "1234",
+      "name": "Josiah Carberry",
+      "role": "instructor"
+    },
+    {
+      "email": "julia_zdzilowska@brown.edu",
+      "password": "anyway",
+      "name": "Julia Zdzilowska",
+      "role": "student"
+    }
+  ]
+}
