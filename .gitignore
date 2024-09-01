@@ -1,0 +1,21 @@
+# frontend ignored folders
+front/node_modules/
+front/src/private
+
+.vscode
+.idea/
+
+# backend ignored folders
+back/.idea/
+back/node_modules/
+
+# Maven
+back/.mvn
+back/.mvn-classpath
+back/pom.xml.bak
+back/target
+
+node_modules/
+
+#playwright 
+test-results/
