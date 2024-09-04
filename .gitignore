@@ -15,6 +15,14 @@ back/.mvn-classpath
 back/pom.xml.bak
 back/target
 
+# Data
+back/data/sessions
+
+# JKS information
+back/private.txt
+back/keystore.jks
+back/keystore.p12
+
 node_modules/
 
 #playwright 

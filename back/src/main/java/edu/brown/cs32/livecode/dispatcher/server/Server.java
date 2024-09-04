@@ -12,6 +12,8 @@ import edu.brown.cs32.livecode.dispatcher.sessionState.SessionState;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,8 @@ import spark.Spark;
  * @version 1.0
  */
 public class Server {
+  static final String keystorePath = "keystore.jks";
+  static final String keystorePasswordPath = "private.txt";
   static final int port = 3333;
   static SessionState sessionState;
 
@@ -34,10 +38,15 @@ public class Server {
    * @param helpRequesterQueue HelpRequesterQueue containing all HelpRequester info
    * @param debuggingPartnerQueue DebuggingPartnerQueue containing all DebuggingPartner info
    */
-  public Server(
-      HelpRequesterQueue helpRequesterQueue, DebuggingPartnerQueue debuggingPartnerQueue) {
+  public Server(HelpRequesterQueue helpRequesterQueue, DebuggingPartnerQueue debuggingPartnerQueue)
+      throws IOException {
+    // Read JKS password
+    String keystorePassword = Files.readString(Path.of(keystorePasswordPath));
+    keystorePassword = keystorePassword.replace("\n", "");
+
     this.sessionState = new SessionState(false);
     Spark.port(port);
+    Spark.secure(keystorePath, keystorePassword, null, null);
     before(
         (requester, response) -> {
           response.header("Access-Control-Allow-Origin", "*");
@@ -86,7 +95,7 @@ public class Server {
    *
    * @param args array of String arguments to main (unused)
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
 
     List<HelpRequester> queue = new ArrayList<>();
 
