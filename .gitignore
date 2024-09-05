@@ -16,7 +16,7 @@ back/pom.xml.bak
 back/target
 
 # Data
-back/data/sessions
+back/data
 
 # JKS information
 back/private.txt
