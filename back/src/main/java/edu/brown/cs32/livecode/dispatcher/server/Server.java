@@ -31,6 +31,7 @@ public class Server {
   static final String keystorePasswordPath = "private.txt";
   static final int port = 3333;
   static SessionState sessionState;
+  private static final Object requestLock = new Object();
 
   /**
    * Constructor for the Server class
@@ -47,6 +48,8 @@ public class Server {
     this.sessionState = new SessionState(false);
     Spark.port(port);
     Spark.secure(keystorePath, keystorePassword, null, null);
+    Spark.threadPool(8);
+
     before(
         (requester, response) -> {
           response.header("Access-Control-Allow-Origin", "*");
@@ -66,25 +69,115 @@ public class Server {
         new ArrayList<>(Server.parseCsvInstructors()); // defensive copy
 
     // Setting up the handler for the GET endpoints
-    Spark.get("addHelpRequester", new AddHelpRequesterHandler(helpRequesterQueue, sessionState));
+    // Spark.get("addHelpRequester", new AddHelpRequesterHandler(helpRequesterQueue, sessionState));
     Spark.get(
-        "addDebuggingPartner", new AddDebuggingPartnerHandler(debuggingPartnerQueue, sessionState));
-    Spark.get("helpRequesterDone", new HelpRequesterDoneHandler(helpRequesterQueue, sessionState));
+        "addHelpRequester",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new AddHelpRequesterHandler(helpRequesterQueue, sessionState).handle(req, res);
+          }
+        });
+    // Spark.get("addDebuggingPartner", new AddDebuggingPartnerHandler(debuggingPartnerQueue,
+    // sessionState));
+    Spark.get(
+        "addDebuggingPartner",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new AddDebuggingPartnerHandler(debuggingPartnerQueue, sessionState)
+                .handle(req, res);
+          }
+        });
+    // Spark.get("helpRequesterDone", new HelpRequesterDoneHandler(helpRequesterQueue,
+    // sessionState));
+    Spark.get(
+        "helpRequesterDone",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new HelpRequesterDoneHandler(helpRequesterQueue, sessionState).handle(req, res);
+          }
+        });
+    // Spark.get("debuggingPartnerDone", new DebuggingPartnerDoneHandler(helpRequesterQueue,
+    // debuggingPartnerQueue, sessionState));
     Spark.get(
         "debuggingPartnerDone",
-        new DebuggingPartnerDoneHandler(helpRequesterQueue, debuggingPartnerQueue, sessionState));
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new DebuggingPartnerDoneHandler(
+                    helpRequesterQueue, debuggingPartnerQueue, sessionState)
+                .handle(req, res);
+          }
+        });
+    // Spark.get("getInfo", new GetInfoHandler(helpRequesterQueue, debuggingPartnerQueue,
+    // sessionState));
     Spark.get(
-        "getInfo", new GetInfoHandler(helpRequesterQueue, debuggingPartnerQueue, sessionState));
-    Spark.get("escalate", new EscalateHandler(helpRequesterQueue, sessionState));
-    Spark.get("deescalate", new DeEscalateHandler(helpRequesterQueue, sessionState));
+        "getInfo",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new GetInfoHandler(helpRequesterQueue, debuggingPartnerQueue, sessionState)
+                .handle(req, res);
+          }
+        });
+    // Spark.get("escalate", new EscalateHandler(helpRequesterQueue, sessionState));
+    Spark.get(
+        "escalate",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new EscalateHandler(helpRequesterQueue, sessionState).handle(req, res);
+          }
+        });
+    // Spark.get("deescalate", new DeEscalateHandler(helpRequesterQueue, sessionState));
+    Spark.get(
+        "deescalate",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new DeEscalateHandler(helpRequesterQueue, sessionState).handle(req, res);
+          }
+        });
+    // Spark.get("flagAndRematch", new FlagAndRematchHandler(helpRequesterQueue,
+    // debuggingPartnerQueue, sessionState));
     Spark.get(
         "flagAndRematch",
-        new FlagAndRematchHandler(helpRequesterQueue, debuggingPartnerQueue, sessionState));
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new FlagAndRematchHandler(
+                    helpRequesterQueue, debuggingPartnerQueue, sessionState)
+                .handle(req, res);
+          }
+        });
+    // Spark.get("session", new SessionHandler(helpRequesterQueue, debuggingPartnerQueue,
+    // sessionState));
     Spark.get(
-        "session", new SessionHandler(helpRequesterQueue, debuggingPartnerQueue, sessionState));
-    Spark.get("downloadInfo", new DownloadInfoHandler(sessionState));
-    Spark.get("isInstructor", new IsInstructorHandler(listInstructors));
-    Spark.get("submitDebuggingQuestions", new SubmitDebuggingQuestionsHandler(sessionState));
+        "session",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new SessionHandler(helpRequesterQueue, debuggingPartnerQueue, sessionState)
+                .handle(req, res);
+          }
+        });
+    // Spark.get("downloadInfo", new DownloadInfoHandler(sessionState));
+    Spark.get(
+        "downloadInfo",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new DownloadInfoHandler(sessionState).handle(req, res);
+          }
+        });
+    // Spark.get("isInstructor", new IsInstructorHandler(listInstructors));
+    Spark.get(
+        "isInstructor",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new IsInstructorHandler(listInstructors).handle(req, res);
+          }
+        });
+    // Spark.get("submitDebuggingQuestions", new SubmitDebuggingQuestionsHandler(sessionState));
+    Spark.get(
+        "submitDebuggingQuestions",
+        (req, res) -> {
+          synchronized (requestLock) {
+            return new SubmitDebuggingQuestionsHandler(sessionState).handle(req, res);
+          }
+        });
 
     Spark.init();
     Spark.awaitInitialization();
