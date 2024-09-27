@@ -14,7 +14,7 @@ function addUserToQueue(
   issueType: string
 ): Promise<string> {
   return fetch(
-    "http://localhost:3333/addHelpRequester?name=" +
+    "https://cs0320-ci.cs.brown.edu:3333/addHelpRequester?name=" +
       name +
       "&email=" +
       email +

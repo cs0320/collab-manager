@@ -13,7 +13,9 @@ import { firebaseConfig } from "../private/FirebaseAPI";
 
 // using login email, determine if instructor by calling backend
 function getRoleFromBackend(email: string): Promise<string> {
-  return fetch("http://localhost:3333/isInstructor?email=" + email)
+  return fetch(
+    "https://cs0320-ci.cs.brown.edu:3333/isInstructor?email=" + email
+  )
     .then((response) => response.json())
     .then((data) => {
       return data["message"]; // either student or instructor
@@ -27,7 +29,7 @@ function getRoleFromBackend(email: string): Promise<string> {
 
 // checks if session started by determining if backend call to get info successful
 export function checkSessionStarted(): Promise<boolean> {
-  return fetch("http://localhost:3333/getInfo")
+  return fetch("https://cs0320-ci.cs.brown.edu:3333/getInfo")
     .then((response) => response.json())
     .then((data) => {
       if (data["result"] === "success") {
@@ -40,6 +42,51 @@ export function checkSessionStarted(): Promise<boolean> {
     .catch((error) => {
       alert("ERROR " + error);
       return false;
+    });
+}
+
+// checks already joined
+export function checkAlreadyJoined(
+  name: string,
+  email: string
+): Promise<UserRole> {
+  // Check if they're a debugging partner already
+  return fetch(
+    "https://cs0320-ci.cs.brown.edu:3333/getInfo?name=" +
+      name +
+      "&email=" +
+      email +
+      "&role=" +
+      "debuggingPartner"
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data["result"] === "success") {
+        return UserRole.DebuggingPartner;
+      } else {
+        // Check if they're a help requester already
+        return fetch(
+          "https://cs0320-ci.cs.brown.edu:3333/getInfo?name=" +
+            name +
+            "&email=" +
+            email +
+            "&role=" +
+            "helpRequester"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data["result"] === "success") {
+              return UserRole.HelpRequester;
+            } else {
+              return UserRole.NoneSelected;
+            }
+          });
+      }
+    })
+    .catch((error) => {
+      alert("ERROR " + error);
+      return UserRole.NoneSelected;
     });
 }
 
@@ -91,13 +138,30 @@ const LoginPage = () => {
               if (!isSessionStarted) {
                 return alert("No session has been started by an instructor.");
               } else {
-                // setting user session provides info for rest of frontend to use
-                setUserSession({
-                  user: user,
-                  role: UserRole.NoneSelected, // students still have to select role
-                  time: null,
-                });
-                return navigate("/role-selection");
+                // First check to see if the student already has a role
+                checkAlreadyJoined(user.name, user.email).then(
+                  (role: UserRole) => {
+                    if (
+                      role == UserRole.DebuggingPartner ||
+                      role == UserRole.HelpRequester
+                    ) {
+                      setUserSession({
+                        user: user,
+                        role: role,
+                        time: new Date(),
+                      });
+                      return navigate("/dashboard");
+                    } else {
+                      // setting user session provides info for rest of frontend to use
+                      setUserSession({
+                        user: user,
+                        role: UserRole.NoneSelected, // students still have to select role
+                        time: null,
+                      });
+                      return navigate("/role-selection");
+                    }
+                  }
+                );
               }
             })
             .catch((error) => {
@@ -107,19 +171,19 @@ const LoginPage = () => {
           checkSessionStarted()
             .then((isSessionStarted) => {
               // if session already started and instructor alert that cannot join
-              if (isSessionStarted) {
-                return alert(
-                  "Only one session can be held at a time and an instructor has already started a session."
-                );
-              } else {
-                // setting user session provides info for rest of frontend to use
-                setUserSession({
-                  user: user,
-                  role: UserRole.Instructor,
-                  time: null,
-                });
-                return navigate("/dashboard");
-              }
+              // if (isSessionStarted) {
+              //   return alert(
+              //     "Only one session can be held at a time and an instructor has already started a session."
+              //   );
+              // } else {
+              // setting user session provides info for rest of frontend to use
+              setUserSession({
+                user: user,
+                role: UserRole.Instructor,
+                time: null,
+              });
+              return navigate("/dashboard");
+              //}
             })
             .catch((error) => {
               console.log("Error encountered: " + error);

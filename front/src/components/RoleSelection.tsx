@@ -7,7 +7,10 @@ import { UserRole, userSessionState } from "../recoil/atoms";
 // adds debugging partner to queue on backend
 function addUserToQueue(email: string, name: string): Promise<string> {
   return fetch(
-    "http://localhost:3333/addDebuggingPartner?name=" + name + "&email=" + email
+    "https://cs0320-ci.cs.brown.edu:3333/addDebuggingPartner?name=" +
+      name +
+      "&email=" +
+      email
   )
     .then((response) => response.json())
     .then((data) => {
