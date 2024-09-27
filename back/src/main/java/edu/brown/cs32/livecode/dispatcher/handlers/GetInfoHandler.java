@@ -157,7 +157,7 @@ public class GetInfoHandler implements Route {
         }
       }
     } else if (role.equals("helpRequester")) {
-      List<HelpRequester> helpRequesters = helpRequesterQueue.getAllHelpRequesters();
+      List<HelpRequester> helpRequesters = helpRequesterQueue.getActiveHelpRequesters();
       for (HelpRequester helpRequester : helpRequesters) {
         String name = helpRequester.getName();
         String email = helpRequester.getEmail();

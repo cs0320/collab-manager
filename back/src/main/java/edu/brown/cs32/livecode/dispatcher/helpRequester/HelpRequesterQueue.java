@@ -89,6 +89,17 @@ public class HelpRequesterQueue {
   }
 
   /**
+   * Getter that returns an unmodifiable copy of all HelpRequesters that are currently active
+   *
+   * @return list of active HelpRequesters
+   */
+  public List<HelpRequester> getActiveHelpRequesters() {
+    List<HelpRequester> allWaitingOrPaired = new ArrayList<>(needHelp);
+    allWaitingOrPaired.addAll(gettingHelp);
+    return Collections.unmodifiableList(allWaitingOrPaired);
+  }
+
+  /**
    * Modifier that adds a new HelpRequester to the queue
    *
    * @param newHelpRequester HelpRequester that has joined
