@@ -54,16 +54,17 @@ const Dashboard = () => {
 
   // resets user session back to log in on session ended
   useEffect(() => {
-    if (userSession.user?.role !== "instructor") {
-      const fetchData = async () => {
-        try {
-          await fetch("http://localhost:3333/getInfo")
-            .then((response) => response.json())
-            .then((data) => {
-              // if successfully can get info (and thus session is running), set values appropriately
-              if (data["result"] === "success" && !sessionStarted) {
-                setSessionStarted(true);
-              }
+    // if (userSession.user?.role !== "instructor") {
+    const fetchData = async () => {
+      try {
+        await fetch("https://cs0320-ci.cs.brown.edu:3333/getInfo")
+          .then((response) => response.json())
+          .then((data) => {
+            // if successfully can get info (and thus session is running), set values appropriately
+            if (data["result"] === "success" && !sessionStarted) {
+              setSessionStarted(true);
+            }
+            if (userSession.user?.role !== "instructor") {
               // if no session is running, sets all values to empty arrays
               if (
                 data["result"] === "error_bad_request" &&
@@ -79,50 +80,19 @@ const Dashboard = () => {
                   time: null,
                 });
               }
-            });
-        } catch (error) {
-          console.log("Error encountered: " + error);
-        }
-      };
-      // fetches data initally
-      fetchData();
-      // Fetch data every 5 seconds
-      const intervalId = setInterval(fetchData, 5000);
-      return () => clearInterval(intervalId);
-    }
+            }
+          });
+      } catch (error) {
+        console.log("Error encountered: " + error);
+      }
+    };
+    // fetches data initally
+    fetchData();
+    // Fetch data every 5 seconds
+    const intervalId = setInterval(fetchData, 5000);
+    return () => clearInterval(intervalId);
+    //}
   }, []);
-
-  /* MOCKED BACKEND -------------------------------------- */
-
-  useEffect(() => {
-    if (isMockedMode) {
-      const fetchPartner = async () => {
-        try {
-          const response = await fetch("http://localhost:2000/getSession");
-          const data = await response.json();
-          if (userSession.role === UserRole.DebuggingPartner) {
-            const sessionAsDP = data.pHelpRequester;
-            const partner = sessionAsDP.user;
-            const issue = sessionAsDP.issueType;
-            setSingleSession({ partner: partner, issueType: issue });
-          }
-          if (userSession.role === UserRole.HelpRequester) {
-            const sessionAsHR = data.pDebuggingPartner;
-            const partner = sessionAsHR.user;
-            setSingleSession({
-              partner: partner,
-              issueType: singleSession.issueType,
-            });
-          }
-        } catch (error) {
-          console.log("Error encountered in mocked mode: " + error);
-        }
-      };
-      fetchPartner();
-    }
-  }, []);
-
-  /* end of MOCKED BACKEND -------------------------------------- */
 
   /* -------------------------------timer content ---------------------------------------*/
 
@@ -132,7 +102,8 @@ const Dashboard = () => {
       return 0;
     }
 
-    const oneHourInMillis = 60 * 60 * 1000; // 1 hour in milliseconds
+    // const oneHourInMillis = 60 * 60 * 1000; // 1 hour in milliseconds
+    const oneHourInMillis = 0;
     const currentTime = new Date().getTime();
     const elapsedTime = currentTime - userSession.time.getTime();
     const remainingTime = Math.max(oneHourInMillis - elapsedTime, 0);
@@ -152,7 +123,7 @@ const Dashboard = () => {
     if (userSession.time === null) {
       return 0;
     }
-    const fifteenMinsInMillis = 1 * 60 * 1000; // 15 mins in milliseconds
+    const fifteenMinsInMillis = 15 * 60 * 1000; // 15 mins in milliseconds
     const currentHour = new Date().getHours();
     const currentMin = new Date().getMinutes();
     const currentSec = new Date().getSeconds();
@@ -190,7 +161,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetch("http://localhost:3333/getInfo")
+        await fetch("https://cs0320-ci.cs.brown.edu:3333/getInfo")
           .then((response) => response.json())
           .then((data) => {
             // if successfully can get info (and thus session is running), set values appropriately
@@ -234,7 +205,7 @@ const Dashboard = () => {
       try {
         if (userSession.role === UserRole.DebuggingPartner) {
           await fetch(
-            "http://localhost:3333/getInfo?role=debuggingPartner&name=" +
+            "https://cs0320-ci.cs.brown.edu:3333/getInfo?role=debuggingPartner&name=" +
               userSession.user?.name +
               "&email=" +
               userSession.user?.email
@@ -313,7 +284,7 @@ const Dashboard = () => {
         }
         if (userSession.role === UserRole.HelpRequester) {
           await fetch(
-            "http://localhost:3333/getInfo?role=helpRequester&name=" +
+            "https://cs0320-ci.cs.brown.edu:3333/getInfo?role=helpRequester&name=" +
               userSession.user?.name +
               "&email=" +
               userSession.user?.email
@@ -375,7 +346,7 @@ const Dashboard = () => {
       console.log(name);
       console.log(email);
       return fetch(
-        "http://localhost:3333/debuggingPartnerDone?name=" +
+        "https://cs0320-ci.cs.brown.edu:3333/debuggingPartnerDone?name=" +
           name +
           "&email=" +
           email +
@@ -395,7 +366,7 @@ const Dashboard = () => {
     // if user is a help requester and they have been paired
     if (role === UserRole.HelpRequester && singleSession.partner) {
       return fetch(
-        "http://localhost:3333/helpRequesterDone?name=" +
+        "https://cs0320-ci.cs.brown.edu:3333/helpRequesterDone?name=" +
           name +
           "&email=" +
           email +
@@ -412,7 +383,7 @@ const Dashboard = () => {
     // if user is help requester and they haven't been paired
     if (role === UserRole.HelpRequester && singleSession.partner == null) {
       return fetch(
-        "http://localhost:3333/helpRequesterDone?name=" +
+        "https://cs0320-ci.cs.brown.edu:3333/helpRequesterDone?name=" +
           name +
           "&email=" +
           email +
@@ -500,7 +471,7 @@ const Dashboard = () => {
           // THIS WILL NOT WORK YET DON"T HAVE EMAIL OF HELP REQUESTER
           // need to get the info about who is submitting
           const response = await fetch(
-            "http://localhost:3333/submitDebuggingQuestions?debuggingPartnerName=" +
+            "https://cs0320-ci.cs.brown.edu:3333/submitDebuggingQuestions?debuggingPartnerName=" +
               userSession.user.name +
               "&debuggingPartnerEmail=" +
               userSession.user.email +
@@ -537,7 +508,7 @@ const Dashboard = () => {
     try {
       console.log(singleSession.partner?.name, singleSession.partner?.email);
       await fetch(
-        "http://localhost:3333/escalate?helpRequesterName=" +
+        "https://cs0320-ci.cs.brown.edu:3333/escalate?helpRequesterName=" +
           singleSession.partner?.name +
           "&helpRequesterEmail=" +
           singleSession.partner?.email
@@ -583,7 +554,7 @@ const Dashboard = () => {
   // starts the session by calling backend
   const handleStart = async () => {
     try {
-      await fetch("http://localhost:3333/session?command=begin");
+      await fetch("https://cs0320-ci.cs.brown.edu:3333/session?command=begin");
     } catch (error) {
       console.log("Error encountered during session start: " + error);
     }
@@ -594,10 +565,10 @@ const Dashboard = () => {
   const handleEnd = async () => {
     try {
       // end session
-      await fetch("http://localhost:3333/session?command=end");
+      await fetch("https://cs0320-ci.cs.brown.edu:3333/session?command=end");
 
       const downloadInfoResponse = await fetch(
-        "http://localhost:3333/downloadInfo?type=debugging"
+        "https://cs0320-ci.cs.brown.edu:3333/downloadInfo?type=debugging"
       );
 
       if (downloadInfoResponse.ok) {
@@ -632,7 +603,7 @@ const Dashboard = () => {
   const handleRemove = (name: string, email: string) => async () => {
     console.log("TEST");
     return fetch(
-      "http://localhost:3333/debuggingPartnerDone?name=" +
+      "https://cs0320-ci.cs.brown.edu:3333/debuggingPartnerDone?name=" +
         name +
         "&email=" +
         email +
@@ -650,29 +621,28 @@ const Dashboard = () => {
   };
 
   // will deescalate a pair
-  const deescalate = (HRname: string, HRemail: string) => 
-    async () => {
-      return fetch(
-        "http://localhost:3333/deescalate?helpRequesterName=" +
-          HRname +
-          "&helpRequesterEmail=" +
-          HRemail
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          return data["message"];
-        })
-        .catch((error) => {
-          console.log("Error encountered during rematching: " + error);
-        });
-    }
+  const deescalate = (HRname: string, HRemail: string) => async () => {
+    return fetch(
+      "https://cs0320-ci.cs.brown.edu:3333/deescalate?helpRequesterName=" +
+        HRname +
+        "&helpRequesterEmail=" +
+        HRemail
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        return data["message"];
+      })
+      .catch((error) => {
+        console.log("Error encountered during rematching: " + error);
+      });
+  };
 
   // will rematch the help requester and flag the debugging partner by removing from attendance
   const handleRematchFlag =
     (HRname: string, HRemail: string, DPname: string, DPemail: string) =>
     async () => {
       return fetch(
-        "http://localhost:3333/flagAndRematch?helpRequesterName=" +
+        "https://cs0320-ci.cs.brown.edu:3333/flagAndRematch?helpRequesterName=" +
           HRname +
           "&helpRequesterEmail=" +
           HRemail +
@@ -693,7 +663,7 @@ const Dashboard = () => {
   console.log("session started " + sessionStarted);
 
   const handleDownloadAll = async () => {
-    await fetch("http://localhost:3333/downloadInfo?type=all", {
+    await fetch("https://cs0320-ci.cs.brown.edu:3333/downloadInfo?type=all", {
       method: "GET",
     })
       .then((response) => {
@@ -905,12 +875,7 @@ const Dashboard = () => {
                     <p className="time">Matched at {pair[2][0]}</p>
                   </div>
                   {/*button to rematch help requester and flag debugging partner*/}
-                  <button
-                    onClick={deescalate(
-                      pair[1][0],
-                      pair[1][1]
-                    )}
-                  >
+                  <button onClick={deescalate(pair[1][0], pair[1][1])}>
                     De-escalate
                   </button>
                 </div>
