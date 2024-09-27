@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/LoginPage.css";
 import { useSetRecoilState } from "recoil";
-import { userSessionState } from "../recoil/atoms";
+import { backend, userSessionState } from "../recoil/atoms";
 import { UserRole } from "../recoil/atoms";
 import { IUser } from "../types/IUser";
 
@@ -13,9 +13,7 @@ import { firebaseConfig } from "../private/FirebaseAPI";
 
 // using login email, determine if instructor by calling backend
 function getRoleFromBackend(email: string): Promise<string> {
-  return fetch(
-    "https://cs0320-ci.cs.brown.edu:3333/isInstructor?email=" + email
-  )
+  return fetch(backend + "/isInstructor?email=" + email)
     .then((response) => response.json())
     .then((data) => {
       return data["message"]; // either student or instructor
@@ -29,7 +27,7 @@ function getRoleFromBackend(email: string): Promise<string> {
 
 // checks if session started by determining if backend call to get info successful
 export function checkSessionStarted(): Promise<boolean> {
-  return fetch("https://cs0320-ci.cs.brown.edu:3333/getInfo")
+  return fetch(backend + "/getInfo")
     .then((response) => response.json())
     .then((data) => {
       if (data["result"] === "success") {
@@ -52,7 +50,8 @@ export function checkAlreadyJoined(
 ): Promise<UserRole> {
   // Check if they're a debugging partner already
   return fetch(
-    "https://cs0320-ci.cs.brown.edu:3333/getInfo?name=" +
+    backend +
+      "/getInfo?name=" +
       name +
       "&email=" +
       email +
@@ -67,7 +66,8 @@ export function checkAlreadyJoined(
       } else {
         // Check if they're a help requester already
         return fetch(
-          "https://cs0320-ci.cs.brown.edu:3333/getInfo?name=" +
+          backend +
+            "/getInfo?name=" +
             name +
             "&email=" +
             email +

@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import {
   IssueType,
   UserRole,
+  backend,
   mockedMode,
   singleSessionState,
   userSessionState,
@@ -57,7 +58,7 @@ const Dashboard = () => {
     // if (userSession.user?.role !== "instructor") {
     const fetchData = async () => {
       try {
-        await fetch("https://cs0320-ci.cs.brown.edu:3333/getInfo")
+        await fetch(backend + "/getInfo")
           .then((response) => response.json())
           .then((data) => {
             // if successfully can get info (and thus session is running), set values appropriately
@@ -161,7 +162,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetch("https://cs0320-ci.cs.brown.edu:3333/getInfo")
+        await fetch(backend + "/getInfo")
           .then((response) => response.json())
           .then((data) => {
             // if successfully can get info (and thus session is running), set values appropriately
@@ -205,7 +206,8 @@ const Dashboard = () => {
       try {
         if (userSession.role === UserRole.DebuggingPartner) {
           await fetch(
-            "https://cs0320-ci.cs.brown.edu:3333/getInfo?role=debuggingPartner&name=" +
+            backend +
+              "/getInfo?role=debuggingPartner&name=" +
               userSession.user?.name +
               "&email=" +
               userSession.user?.email
@@ -284,7 +286,8 @@ const Dashboard = () => {
         }
         if (userSession.role === UserRole.HelpRequester) {
           await fetch(
-            "https://cs0320-ci.cs.brown.edu:3333/getInfo?role=helpRequester&name=" +
+            backend +
+              "/getInfo?role=helpRequester&name=" +
               userSession.user?.name +
               "&email=" +
               userSession.user?.email
@@ -346,7 +349,8 @@ const Dashboard = () => {
       console.log(name);
       console.log(email);
       return fetch(
-        "https://cs0320-ci.cs.brown.edu:3333/debuggingPartnerDone?name=" +
+        backend +
+          "/debuggingPartnerDone?name=" +
           name +
           "&email=" +
           email +
@@ -366,7 +370,8 @@ const Dashboard = () => {
     // if user is a help requester and they have been paired
     if (role === UserRole.HelpRequester && singleSession.partner) {
       return fetch(
-        "https://cs0320-ci.cs.brown.edu:3333/helpRequesterDone?name=" +
+        backend +
+          "/helpRequesterDone?name=" +
           name +
           "&email=" +
           email +
@@ -383,7 +388,8 @@ const Dashboard = () => {
     // if user is help requester and they haven't been paired
     if (role === UserRole.HelpRequester && singleSession.partner == null) {
       return fetch(
-        "https://cs0320-ci.cs.brown.edu:3333/helpRequesterDone?name=" +
+        backend +
+          "/helpRequesterDone?name=" +
           name +
           "&email=" +
           email +
@@ -471,7 +477,8 @@ const Dashboard = () => {
           // THIS WILL NOT WORK YET DON"T HAVE EMAIL OF HELP REQUESTER
           // need to get the info about who is submitting
           const response = await fetch(
-            "https://cs0320-ci.cs.brown.edu:3333/submitDebuggingQuestions?debuggingPartnerName=" +
+            backend +
+              "/submitDebuggingQuestions?debuggingPartnerName=" +
               userSession.user.name +
               "&debuggingPartnerEmail=" +
               userSession.user.email +
@@ -508,7 +515,8 @@ const Dashboard = () => {
     try {
       console.log(singleSession.partner?.name, singleSession.partner?.email);
       await fetch(
-        "https://cs0320-ci.cs.brown.edu:3333/escalate?helpRequesterName=" +
+        backend +
+          "/escalate?helpRequesterName=" +
           singleSession.partner?.name +
           "&helpRequesterEmail=" +
           singleSession.partner?.email
@@ -554,7 +562,7 @@ const Dashboard = () => {
   // starts the session by calling backend
   const handleStart = async () => {
     try {
-      await fetch("https://cs0320-ci.cs.brown.edu:3333/session?command=begin");
+      await fetch(backend + "/session?command=begin");
     } catch (error) {
       console.log("Error encountered during session start: " + error);
     }
@@ -565,10 +573,10 @@ const Dashboard = () => {
   const handleEnd = async () => {
     try {
       // end session
-      await fetch("https://cs0320-ci.cs.brown.edu:3333/session?command=end");
+      await fetch(backend + "/session?command=end");
 
       const downloadInfoResponse = await fetch(
-        "https://cs0320-ci.cs.brown.edu:3333/downloadInfo?type=debugging"
+        backend + "/downloadInfo?type=debugging"
       );
 
       if (downloadInfoResponse.ok) {
@@ -603,7 +611,8 @@ const Dashboard = () => {
   const handleRemove = (name: string, email: string) => async () => {
     console.log("TEST");
     return fetch(
-      "https://cs0320-ci.cs.brown.edu:3333/debuggingPartnerDone?name=" +
+      backend +
+        "/debuggingPartnerDone?name=" +
         name +
         "&email=" +
         email +
@@ -623,7 +632,8 @@ const Dashboard = () => {
   // will deescalate a pair
   const deescalate = (HRname: string, HRemail: string) => async () => {
     return fetch(
-      "https://cs0320-ci.cs.brown.edu:3333/deescalate?helpRequesterName=" +
+      backend +
+        "/deescalate?helpRequesterName=" +
         HRname +
         "&helpRequesterEmail=" +
         HRemail
@@ -642,7 +652,8 @@ const Dashboard = () => {
     (HRname: string, HRemail: string, DPname: string, DPemail: string) =>
     async () => {
       return fetch(
-        "https://cs0320-ci.cs.brown.edu:3333/flagAndRematch?helpRequesterName=" +
+        backend +
+          "/flagAndRematch?helpRequesterName=" +
           HRname +
           "&helpRequesterEmail=" +
           HRemail +
@@ -663,7 +674,7 @@ const Dashboard = () => {
   console.log("session started " + sessionStarted);
 
   const handleDownloadAll = async () => {
-    await fetch("https://cs0320-ci.cs.brown.edu:3333/downloadInfo?type=all", {
+    await fetch(backend + "/downloadInfo?type=all", {
       method: "GET",
     })
       .then((response) => {

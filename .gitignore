@@ -1,6 +1,7 @@
 # frontend ignored folders
 front/node_modules/
 front/src/private
+front/build/
 
 .vscode
 .idea/

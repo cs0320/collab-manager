@@ -6,6 +6,7 @@ import {
   IssueType,
   userSessionState,
   singleSessionState,
+  backend,
 } from "../recoil/atoms";
 
 function addUserToQueue(
@@ -14,7 +15,8 @@ function addUserToQueue(
   issueType: string
 ): Promise<string> {
   return fetch(
-    "https://cs0320-ci.cs.brown.edu:3333/addHelpRequester?name=" +
+    backend +
+      "/addHelpRequester?name=" +
       name +
       "&email=" +
       email +

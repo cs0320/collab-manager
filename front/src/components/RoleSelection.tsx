@@ -2,15 +2,12 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/RoleSelection.css";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { UserRole, userSessionState } from "../recoil/atoms";
+import { backend, UserRole, userSessionState } from "../recoil/atoms";
 
 // adds debugging partner to queue on backend
 function addUserToQueue(email: string, name: string): Promise<string> {
   return fetch(
-    "https://cs0320-ci.cs.brown.edu:3333/addDebuggingPartner?name=" +
-      name +
-      "&email=" +
-      email
+    backend + "/addDebuggingPartner?name=" + name + "&email=" + email
   )
     .then((response) => response.json())
     .then((data) => {
