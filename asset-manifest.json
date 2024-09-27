@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/collab-manager/static/css/main.365c7f5d.css",
-    "main.js": "/collab-manager/static/js/main.49186f6e.js",
+    "main.css": "/collab-manager/static/css/main.39173105.css",
+    "main.js": "/collab-manager/static/js/main.a25a9982.js",
     "static/media/flagsbackground.jpeg": "/collab-manager/static/media/flagsbackground.f690e7aa49c0f2d6179c.jpeg",
     "static/media/brownlogo.png": "/collab-manager/static/media/brownlogo.b24cde44d2102290a637.png",
     "index.html": "/collab-manager/index.html",
-    "main.365c7f5d.css.map": "/collab-manager/static/css/main.365c7f5d.css.map",
-    "main.49186f6e.js.map": "/collab-manager/static/js/main.49186f6e.js.map"
+    "main.39173105.css.map": "/collab-manager/static/css/main.39173105.css.map",
+    "main.a25a9982.js.map": "/collab-manager/static/js/main.a25a9982.js.map"
   },
   "entrypoints": [
-    "static/css/main.365c7f5d.css",
-    "static/js/main.49186f6e.js"
+    "static/css/main.39173105.css",
+    "static/js/main.a25a9982.js"
   ]
 }
