@@ -105,6 +105,16 @@ public class HelpRequesterQueue {
    * @param newHelpRequester HelpRequester that has joined
    */
   public void addNeedsHelp(HelpRequester newHelpRequester) {
+    // only add the debugging partner if their email is not already in the list of debugging
+    // partners
+    String newEmail = newHelpRequester.getEmail();
+    List<HelpRequester> activeHelpRequesters = getActiveHelpRequesters();
+    for (HelpRequester helpRequester : activeHelpRequesters) {
+      // if this debugging partner already exists, return without adding them
+      if (newEmail.equals(helpRequester.getEmail())) {
+        return;
+      }
+    }
     needHelp.add(newHelpRequester);
     allHelpRequesters.add(newHelpRequester);
   }

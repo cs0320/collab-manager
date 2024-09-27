@@ -41,6 +41,15 @@ public class DebuggingPartnerQueue {
    * @param newDebuggingPartner DebuggingPartner representing new student joining queue
    */
   public void addDebuggingPartner(DebuggingPartner newDebuggingPartner) {
+    // only add the debugging partner if their email is not already in the list of debugging
+    // partners
+    String newEmail = newDebuggingPartner.getEmail();
+    for (DebuggingPartner debuggingPartner : debuggingPartnerList) {
+      // if this debugging partner already exists, return without adding them
+      if (newEmail.equals(debuggingPartner.getEmail())) {
+        return;
+      }
+    }
     allDebuggingPartners.add(newDebuggingPartner);
     debuggingPartnerList.add(newDebuggingPartner);
   }
