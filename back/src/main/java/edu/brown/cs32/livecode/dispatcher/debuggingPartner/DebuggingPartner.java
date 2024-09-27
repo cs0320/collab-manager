@@ -98,7 +98,7 @@ public class DebuggingPartner implements Runnable {
    * @param helpRequester the HelpRequester to see
    * @throws Exception if the DebuggingPartner is already helping someone
    */
-  public void seeStudent(HelpRequester helpRequester) throws Exception {
+  public synchronized void seeStudent(HelpRequester helpRequester) throws Exception {
     if (this.helping != null) throw new Exception();
     this.pairedAtTime = Utils.simpleTime();
     this.helping = helpRequester;

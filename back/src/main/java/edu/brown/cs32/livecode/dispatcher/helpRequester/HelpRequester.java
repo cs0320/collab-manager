@@ -81,7 +81,7 @@ public class HelpRequester {
    *
    * @param debuggingPartnerHelper DebuggingPartner that is helping the HelpRequester
    */
-  public void setDebuggingPartner(DebuggingPartner debuggingPartnerHelper) {
+  public synchronized void setDebuggingPartner(DebuggingPartner debuggingPartnerHelper) {
     this.debuggingPartner = debuggingPartnerHelper;
     this.pairedAtTime = Utils.simpleTime();
   }

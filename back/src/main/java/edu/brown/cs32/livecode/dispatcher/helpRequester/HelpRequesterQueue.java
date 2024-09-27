@@ -47,7 +47,7 @@ public class HelpRequesterQueue {
    *
    * @return Iterator of HelpRequester representing all HelpRequesters that need help
    */
-  public Iterator<HelpRequester> getNeedHelp() {
+  public synchronized Iterator<HelpRequester> getNeedHelp() {
     return needHelp.iterator();
   }
 
@@ -56,7 +56,7 @@ public class HelpRequesterQueue {
    *
    * @return list of HelpRequesters that need help
    */
-  public List<HelpRequester> getNeedHelpList() {
+  public synchronized List<HelpRequester> getNeedHelpList() {
     return Collections.unmodifiableList(needHelp);
   }
 
@@ -65,7 +65,7 @@ public class HelpRequesterQueue {
    *
    * @return list of HelpRequesters getting help
    */
-  public List<HelpRequester> getGettingHelpList() {
+  public synchronized List<HelpRequester> getGettingHelpList() {
     return Collections.unmodifiableList(gettingHelp);
   }
 
@@ -75,7 +75,7 @@ public class HelpRequesterQueue {
    *
    * @return list of HelpRequesters that have already been helped
    */
-  public List<HelpRequester> getHelpedList() {
+  public synchronized List<HelpRequester> getHelpedList() {
     return Collections.unmodifiableList(alreadyHelped);
   }
 
@@ -84,7 +84,7 @@ public class HelpRequesterQueue {
    *
    * @return list of all HelpRequesters
    */
-  public List<HelpRequester> getAllHelpRequesters() {
+  public synchronized List<HelpRequester> getAllHelpRequesters() {
     return Collections.unmodifiableList(allHelpRequesters);
   }
 
@@ -93,7 +93,7 @@ public class HelpRequesterQueue {
    *
    * @return list of active HelpRequesters
    */
-  public List<HelpRequester> getActiveHelpRequesters() {
+  public synchronized List<HelpRequester> getActiveHelpRequesters() {
     List<HelpRequester> allWaitingOrPaired = new ArrayList<>(needHelp);
     allWaitingOrPaired.addAll(gettingHelp);
     return Collections.unmodifiableList(allWaitingOrPaired);
@@ -104,7 +104,7 @@ public class HelpRequesterQueue {
    *
    * @param newHelpRequester HelpRequester that has joined
    */
-  public void addNeedsHelp(HelpRequester newHelpRequester) {
+  public synchronized void addNeedsHelp(HelpRequester newHelpRequester) {
     // only add the debugging partner if their email is not already in the list of debugging
     // partners
     String newEmail = newHelpRequester.getEmail();
@@ -124,7 +124,7 @@ public class HelpRequesterQueue {
    *
    * @param helpRequester HelpRequester that has been claimed by a DebuggingPartner
    */
-  public void claimHelpRequester(HelpRequester helpRequester) {
+  public synchronized void claimHelpRequester(HelpRequester helpRequester) {
     needHelp.remove(helpRequester);
     gettingHelp.add(helpRequester);
   }
@@ -136,7 +136,7 @@ public class HelpRequesterQueue {
    * @param email String email of the HelpRequester that is done
    * @return boolean representing whether the HelpRequester was found and removed
    */
-  public boolean setDoneDebugging(String name, String email) {
+  public synchronized boolean setDoneDebugging(String name, String email) {
     boolean debugged = false;
     HelpRequester toRemove = null;
     for (HelpRequester helpRequester : gettingHelp) {
@@ -175,7 +175,7 @@ public class HelpRequesterQueue {
    * @param helpRequesterEmail String email of the HelpRequester to escalate
    * @return boolean representing whether the HelpRequester was successfully set as escalated
    */
-  public boolean setEscalated(String helpRequesterName, String helpRequesterEmail) {
+  public synchronized boolean setEscalated(String helpRequesterName, String helpRequesterEmail) {
     boolean escalated = false;
     for (HelpRequester helpRequester : gettingHelp) {
       String thisName = helpRequester.getName();
@@ -195,7 +195,7 @@ public class HelpRequesterQueue {
    * @param helpRequesterEmail String email of the HelpRequester to deescalate
    * @return boolean representing whether the HelpRequester was successfully set as deescalated
    */
-  public boolean setDeEscalated(String helpRequesterName, String helpRequesterEmail) {
+  public synchronized boolean setDeEscalated(String helpRequesterName, String helpRequesterEmail) {
     boolean deescalated = false;
     for (HelpRequester helpRequester : gettingHelp) {
       String thisName = helpRequester.getName();
@@ -216,7 +216,7 @@ public class HelpRequesterQueue {
    * @param helpRequesterName String name representing the name of the HelpRequester
    * @return boolean representing whether the HelpRequester was moved back to the queue
    */
-  public boolean checkPaired(String debuggingPartnerName, String helpRequesterName) {
+  public synchronized boolean checkPaired(String debuggingPartnerName, String helpRequesterName) {
     for (HelpRequester helpRequester : gettingHelp) {
       String thisHelpRequesterName = helpRequester.getName();
       if (thisHelpRequesterName.equals(helpRequesterName)) {
@@ -232,7 +232,8 @@ public class HelpRequesterQueue {
     return false;
   }
 
-  public void rematchByDebuggingPartner(String debuggingPartnerName, String debuggingPartnerEmail) {
+  public synchronized void rematchByDebuggingPartner(
+      String debuggingPartnerName, String debuggingPartnerEmail) {
     HelpRequester toMove = null;
     for (HelpRequester helpRequester : gettingHelp) {
       DebuggingPartner helper = helpRequester.getDebuggingPartner();
@@ -255,7 +256,7 @@ public class HelpRequesterQueue {
    * @param name String name of DebuggingPartner to remove from the queue
    * @param email String email of DebuggingPartner to remove from the queue
    */
-  public void removeFromAttendanceList(String name, String email) {
+  public synchronized void removeFromAttendanceList(String name, String email) {
     List<HelpRequester> newHelpRequesters = new ArrayList<>();
     for (HelpRequester helpRequester : allHelpRequesters) {
       if (!helpRequester.getName().equals(name) || !helpRequester.getEmail().equals(email)) {
@@ -267,7 +268,7 @@ public class HelpRequesterQueue {
     allHelpRequesters = newHelpRequesters;
   }
 
-  public boolean moveBackToQueue(String name, String email) {
+  public synchronized boolean moveBackToQueue(String name, String email) {
     boolean moved = false;
     HelpRequester toMove = null;
     for (HelpRequester helpRequester : gettingHelp) {

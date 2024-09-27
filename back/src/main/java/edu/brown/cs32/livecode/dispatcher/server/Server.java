@@ -12,8 +12,6 @@ import edu.brown.cs32.livecode.dispatcher.sessionState.SessionState;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,12 +40,12 @@ public class Server {
   public Server(HelpRequesterQueue helpRequesterQueue, DebuggingPartnerQueue debuggingPartnerQueue)
       throws IOException {
     // Read JKS password
-    String keystorePassword = Files.readString(Path.of(keystorePasswordPath));
-    keystorePassword = keystorePassword.replace("\n", "");
+    // String keystorePassword = Files.readString(Path.of(keystorePasswordPath));
+    // keystorePassword = keystorePassword.replace("\n", "");
 
     this.sessionState = new SessionState(false);
     Spark.port(port);
-    Spark.secure(keystorePath, keystorePassword, null, null);
+    // Spark.secure(keystorePath, keystorePassword, null, null);
     Spark.threadPool(8);
 
     before(

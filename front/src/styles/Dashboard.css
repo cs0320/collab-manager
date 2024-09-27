@@ -85,7 +85,7 @@
 .dashboard-container {
   background-color: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(15px);
-  width: 80%;
+  width: 85%;
   height: max-content;
   border-radius: 30px;
   box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.4);
@@ -464,7 +464,6 @@
 
 .instructor-container button {
   white-space: nowrap;
-  width: 200px;
   border: none;
   outline: none;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
@@ -474,7 +473,8 @@
   font-size: 16px;
   font-weight: 600;
   height: 30px;
-  padding: 0px 40px 0px 40px;
+  padding: 0px;
+  margin-left: 10px;
   text-decoration: none;
   transition: 0.5s ease;
   display: flex;
@@ -510,7 +510,7 @@
 
 .single-debugging button {
   margin-top: 8px;
-  width: 60%;
+  width: 40%;
 }
 
 .single-debugging-namentime {

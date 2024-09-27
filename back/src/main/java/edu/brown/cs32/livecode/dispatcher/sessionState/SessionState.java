@@ -38,7 +38,7 @@ public class SessionState {
    *
    * @param newRunning boolean representing new value for the running field
    */
-  public void setRunning(boolean newRunning) {
+  public synchronized void setRunning(boolean newRunning) {
     running = newRunning;
   }
 
@@ -47,7 +47,7 @@ public class SessionState {
    *
    * @return boolean representing the running field
    */
-  public boolean getRunning() {
+  public synchronized boolean getRunning() {
     return running;
   }
 
@@ -56,7 +56,7 @@ public class SessionState {
    *
    * @param newDateTime representing new value for the beginTime field
    */
-  public void setBeginTime(String newDateTime) {
+  public synchronized void setBeginTime(String newDateTime) {
     beginTime = newDateTime;
   }
 
@@ -65,7 +65,7 @@ public class SessionState {
    *
    * @return String representing the beginTime field
    */
-  public String getBeginTime() {
+  public synchronized String getBeginTime() {
     return beginTime;
   }
 
@@ -74,7 +74,7 @@ public class SessionState {
    *
    * @param newDateTime String representing new value for the endTime field
    */
-  public void setEndTime(String newDateTime) {
+  public synchronized void setEndTime(String newDateTime) {
     endTime = newDateTime;
   }
 
@@ -83,7 +83,7 @@ public class SessionState {
    *
    * @return String representing the endTime field
    */
-  public String getEndTime() {
+  public synchronized String getEndTime() {
     return endTime;
   }
 
@@ -92,7 +92,7 @@ public class SessionState {
    *
    * @return String representing the answersFileName field
    */
-  public String getAnswersFileName() {
+  public synchronized String getAnswersFileName() {
     return answersFileName;
   }
 }

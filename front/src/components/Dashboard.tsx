@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { constSelector, useRecoilState, useRecoilValue } from "recoil";
 import {
   IssueType,
   UserRole,
@@ -57,6 +57,7 @@ const Dashboard = () => {
   useEffect(() => {
     // if (userSession.user?.role !== "instructor") {
     const fetchData = async () => {
+      console.log("Fetching!");
       try {
         await fetch(backend + "/getInfo")
           .then((response) => response.json())
@@ -190,7 +191,7 @@ const Dashboard = () => {
 
     // fetches data initally
     fetchData();
-
+    document.addEventListener("click", fetchData);
     // Fetch data every 5 seconds (adjust the interval as needed)
     const intervalId = setInterval(fetchData, 5000);
     return () => clearInterval(intervalId);
@@ -214,6 +215,14 @@ const Dashboard = () => {
           )
             .then((response) => response.json())
             .then((data) => {
+              console.log(
+                backend +
+                  "/getInfo?role=debuggingPartner&name=" +
+                  userSession.user?.name +
+                  "&email=" +
+                  userSession.user?.email
+              );
+              console.log(data);
               if (data["result"] === "error_bad_request") {
                 setUserSession({
                   user: null,
@@ -340,78 +349,84 @@ const Dashboard = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  function removeFromQueue(
-    email: string | undefined,
-    name: string | undefined,
-    role: UserRole
-  ): Promise<String> {
-    if (role === UserRole.DebuggingPartner) {
-      console.log(name);
-      console.log(email);
-      return fetch(
-        backend +
-          "/debuggingPartnerDone?name=" +
-          name +
-          "&email=" +
-          email +
-          "&record=yes"
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          return data["result"];
-        })
-        .catch((error) => {
-          console.log(
-            "Error encountered when removing debugging partner from queue" +
-              error
+  const removeFromQueue =
+    (email: string | undefined, name: string | undefined, role: UserRole) =>
+    async () => {
+      console.log("HERE");
+      if (role === UserRole.DebuggingPartner) {
+        console.log(name);
+        console.log(email);
+        return fetch(
+          backend +
+            "/debuggingPartnerDone?name=" +
+            name +
+            "&email=" +
+            email +
+            "&record=yes"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            return data["result"];
+          })
+          .catch((error) => {
+            console.log(
+              "Error encountered when removing debugging partner from queue" +
+                error
+            );
+          });
+      }
+      // if user is a help requester and they have been paired
+      if (role === UserRole.HelpRequester && singleSession.partner) {
+        console.log(name);
+        console.log(email);
+        return fetch(
+          backend +
+            "/helpRequesterDone?name=" +
+            name +
+            "&email=" +
+            email +
+            "&record=yes"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            return data["result"];
+          })
+          .catch((e) => {
+            return "ERROR: " + e;
+          });
+      }
+      // if user is help requester and they haven't been paired
+      if (role === UserRole.HelpRequester && singleSession.partner == null) {
+        console.log("Partner is null");
+        return fetch(
+          backend +
+            "/helpRequesterDone?name=" +
+            name +
+            "&email=" +
+            email +
+            "&record=no"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            return data["result"];
+          })
+          .catch((error) => {
+            console.log(
+              "Error encountered when removing help requester from queue" +
+                error
+            );
+          });
+      } else {
+        return new Promise<String>((resolves) => {
+          console.log("UserRole not set");
+          resolves(
+            "ERROR: UserRole must be HelpRequester or DebuggingPartner for this function"
           );
         });
-    }
-    // if user is a help requester and they have been paired
-    if (role === UserRole.HelpRequester && singleSession.partner) {
-      return fetch(
-        backend +
-          "/helpRequesterDone?name=" +
-          name +
-          "&email=" +
-          email +
-          "&record=yes"
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          return data["result"];
-        })
-        .catch((e) => {
-          return "ERROR: " + e;
-        });
-    }
-    // if user is help requester and they haven't been paired
-    if (role === UserRole.HelpRequester && singleSession.partner == null) {
-      return fetch(
-        backend +
-          "/helpRequesterDone?name=" +
-          name +
-          "&email=" +
-          email +
-          "&record=no"
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          return data["result"];
-        })
-        .catch((error) => {
-          console.log(
-            "Error encountered when removing help requester from queue" + error
-          );
-        });
-    } else {
-      return new Promise<String>((resolves) => {
-        resolves(
-          "ERROR: UserRole must be HelpRequester or DebuggingPartner for this function"
-        );
-      });
-    }
-  }
+      }
+    };
 
   /* ---------------------------------- end get info debuggings and help requesters -----------------------------------------*/
 
@@ -535,28 +550,30 @@ const Dashboard = () => {
   };
 
   const handleEndSession = (role: UserRole) => {
-    if (role === UserRole.DebuggingPartner) {
-      removeFromQueue(
-        userSession.user?.email,
-        userSession.user?.name,
-        UserRole.DebuggingPartner
-      );
-    }
-    if (role === UserRole.HelpRequester) {
-      console.log(userSession);
-      removeFromQueue(
-        userSession.user?.email,
-        userSession.user?.name,
-        UserRole.HelpRequester
-      );
-      // reset partner of debugging partner
+    console.log("HANDLING END OF SESSION");
+    // if (role === UserRole.DebuggingPartner) {
+    //   removeFromQueue(
+    //     userSession.user?.email,
+    //     userSession.user?.name,
+    //     UserRole.DebuggingPartner
+    //   );
+    // }
+    // if (role === UserRole.HelpRequester) {
+    console.log(userSession);
+    //   console.log("about to remove from queue");
+    //   removeFromQueue(
+    //     userSession.user?.email,
+    //     userSession.user?.name,
+    //     UserRole.HelpRequester
+    //   );
+    //   // reset partner of debugging partner
 
-      // take help requester out of the queue
-    }
-    setBugCategory("");
-    setDebuggingProcess("");
-    setSingleSession({ partner: null, issueType: IssueType.NoneSelected });
-    setUserSession({ user: null, role: UserRole.NoneSelected, time: null });
+    //   // take help requester out of the queue
+    // }
+    // setBugCategory("");
+    // setDebuggingProcess("");
+    // setSingleSession({ partner: null, issueType: IssueType.NoneSelected });
+    // setUserSession({ user: null, role: UserRole.NoneSelected, time: null });
   };
 
   // starts the session by calling backend
@@ -742,7 +759,12 @@ const Dashboard = () => {
             {}
             <button
               className="done-button"
-              onClick={() => handleEndSession(UserRole.HelpRequester)}
+              // onClick={() => handleEndSession(UserRole.HelpRequester)}
+              onClick={removeFromQueue(
+                userSession.user?.email,
+                userSession.user?.name,
+                userSession.role
+              )}
             >
               I'm done!
             </button>
@@ -759,12 +781,19 @@ const Dashboard = () => {
       return <Timer fullTimeRemaining={fullTimeRemaining} />;
     } else if (fullTimeRemaining === 0) {
       return (
-        <button
-          className="done-button"
-          onClick={() => handleEndSession(UserRole.DebuggingPartner)}
-        >
-          I'm done!
-        </button>
+        <div>
+          <button
+            className="done-button"
+            // onClick={() => handleEndSession(UserRole.DebuggingPartner)}
+            onClick={removeFromQueue(
+              userSession.user?.email,
+              userSession.user?.name,
+              userSession.role
+            )}
+          >
+            I'm done with my FULL hour!
+          </button>
+        </div>
       );
     }
   };
@@ -811,7 +840,7 @@ const Dashboard = () => {
                     {/*displays join time*/}
                     <p className="time">Joined at {partner[2]}</p>
                   </div>
-                  {/*button to remove from attendance*/}
+                  {/*button to remove debugging partner from attendance*/}
                   <button onClick={handleRemove(partner[0], partner[1])}>
                     Remove
                   </button>
@@ -838,11 +867,7 @@ const Dashboard = () => {
             {/*checks if there are unpaired help requester to determine what to display*/}
             {unpairedHR && unpairedHR.length > 0 ? (
               unpairedHR.map((partner, index) => (
-                <div
-                  key={index}
-                  className="single-debugging"
-                  style={{ display: "flex", justifyContent: "flex-start" }}
-                >
+                <div key={index} className="single-debugging">
                   <div className="single-debugging-namentime">
                     {/*displays help requester name*/}
                     <p className="name">
@@ -851,6 +876,16 @@ const Dashboard = () => {
                     {/*displays join time*/}
                     <p className="time">Joined at {partner[2]}</p>
                   </div>
+                  {/*button to remove from attendance*/}
+                  <button
+                    onClick={removeFromQueue(
+                      partner[1],
+                      partner[0],
+                      UserRole.HelpRequester
+                    )}
+                  >
+                    Remove
+                  </button>
                 </div>
               ))
             ) : (
@@ -880,7 +915,7 @@ const Dashboard = () => {
                   <div className="single-debugging-namentime">
                     {/*displays names of pair*/}
                     <p className="name">
-                      {index + 1}. {pair[0][0]} & {pair[1][0]}
+                      {index + 1}. DP: {pair[0][0]} & HR: {pair[1][0]}
                     </p>
                     {/*displays time of match*/}
                     <p className="time">Matched at {pair[2][0]}</p>
@@ -914,7 +949,7 @@ const Dashboard = () => {
                   <div className="single-debugging-namentime">
                     {/*displays names of pair*/}
                     <p className="name">
-                      {index + 1}. {pair[0][0]} & {pair[1][0]}
+                      {index + 1}. DP: {pair[0][0]} & HR: {pair[1][0]}
                     </p>
                     {/*displays time of match*/}
                     <p className="time">Matched at {pair[2][0]}</p>
@@ -927,7 +962,16 @@ const Dashboard = () => {
                       pair[0][1]
                     )}
                   >
-                    Rematch and Flag
+                    Remove DP
+                  </button>
+                  <button
+                    onClick={removeFromQueue(
+                      pair[1][1],
+                      pair[1][0],
+                      UserRole.HelpRequester
+                    )}
+                  >
+                    Remove HR
                   </button>
                 </div>
               ))

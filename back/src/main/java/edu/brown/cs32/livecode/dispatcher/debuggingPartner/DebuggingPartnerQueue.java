@@ -29,7 +29,7 @@ public class DebuggingPartnerQueue {
    * Clears the list of debugging partners and restores the index. Called once a session ends (after
    * data has been written to attendance CSVs).
    */
-  public void reset() {
+  public synchronized void reset() {
     debuggingPartnerList.clear();
     allDebuggingPartners.clear();
     index = 0;
@@ -40,7 +40,7 @@ public class DebuggingPartnerQueue {
    *
    * @param newDebuggingPartner DebuggingPartner representing new student joining queue
    */
-  public void addDebuggingPartner(DebuggingPartner newDebuggingPartner) {
+  public synchronized void addDebuggingPartner(DebuggingPartner newDebuggingPartner) {
     // only add the debugging partner if their email is not already in the list of debugging
     // partners
     String newEmail = newDebuggingPartner.getEmail();
@@ -61,7 +61,7 @@ public class DebuggingPartnerQueue {
    * @param email String email of DebuggingPartner to remove from the queue
    * @return boolean representing whether the DebuggingPartner was removed successfully
    */
-  public boolean removeDebuggingPartner(String name, String email) {
+  public synchronized boolean removeDebuggingPartner(String name, String email) {
     boolean foundDebuggingPartner = false;
     List<DebuggingPartner> newDebuggingPartners = new ArrayList<>();
     for (DebuggingPartner debuggingPartner : debuggingPartnerList) {
@@ -81,7 +81,7 @@ public class DebuggingPartnerQueue {
    * @param name String name of DebuggingPartner to remove from the queue
    * @param email String email of DebuggingPartner to remove from the queue
    */
-  public boolean removeFromAttendanceList(String name, String email) {
+  public synchronized boolean removeFromAttendanceList(String name, String email) {
     boolean found = false;
     List<DebuggingPartner> newDebuggingPartners = new ArrayList<>();
     for (DebuggingPartner debuggingPartner : allDebuggingPartners) {
@@ -100,7 +100,7 @@ public class DebuggingPartnerQueue {
    *
    * @return list of current DebuggingPartners
    */
-  public List<DebuggingPartner> getDebuggingPartnerList() {
+  public synchronized List<DebuggingPartner> getDebuggingPartnerList() {
     return Collections.unmodifiableList(debuggingPartnerList);
   }
 
@@ -109,7 +109,7 @@ public class DebuggingPartnerQueue {
    *
    * @return list of all DebuggingPartners
    */
-  public List<DebuggingPartner> getAllDebuggingPartnerList() {
+  public synchronized List<DebuggingPartner> getAllDebuggingPartnerList() {
     return Collections.unmodifiableList(allDebuggingPartners);
   }
 
@@ -121,7 +121,7 @@ public class DebuggingPartnerQueue {
    * @param email String representing email of DebuggingPartner to flag
    * @return boolean representing whether DebuggingPartner was successfully flagged and removed
    */
-  public boolean removeAndFlagDebuggingPartner(String name, String email) {
+  public synchronized boolean removeAndFlagDebuggingPartner(String name, String email) {
     boolean removed = false;
     DebuggingPartner toRemove = null;
     for (DebuggingPartner debuggingPartner : debuggingPartnerList) {
@@ -144,7 +144,7 @@ public class DebuggingPartnerQueue {
    *
    * @return DebuggingPartner that is next in the queue
    */
-  public DebuggingPartner nextDebuggingPartner() {
+  public synchronized DebuggingPartner nextDebuggingPartner() {
     if (debuggingPartnerList.isEmpty()) {
       return null;
     } else if (index >= debuggingPartnerList.size()) {

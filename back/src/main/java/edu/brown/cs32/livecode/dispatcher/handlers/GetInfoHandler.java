@@ -128,7 +128,7 @@ public class GetInfoHandler implements Route {
    */
   public Object getSpecificInfo(String targetName, String role, String targetEmail) {
     if (role.equals("debuggingPartner")) {
-      List<DebuggingPartner> debuggingPartners = debuggingPartnerQueue.getAllDebuggingPartnerList();
+      List<DebuggingPartner> debuggingPartners = debuggingPartnerQueue.getDebuggingPartnerList();
       for (DebuggingPartner debuggingPartner : debuggingPartners) {
         String name = debuggingPartner.getName();
         String email = debuggingPartner.getEmail();
