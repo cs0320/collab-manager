@@ -2,6 +2,7 @@ package edu.brown.cs32.livecode.dispatcher.server;
 
 import edu.brown.cs32.livecode.dispatcher.debuggingPartner.DebuggingPartnerQueue;
 import edu.brown.cs32.livecode.dispatcher.helpRequester.HelpRequesterQueue;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -16,9 +17,13 @@ import org.junit.jupiter.api.Test;
  */
 public class TestServer {
 
-  /** Test creation of a server */
+  /**
+   * Test creation of a server
+   *
+   * @throws IOException
+   */
   @Test
-  public void testServer() {
+  public void testServer() throws IOException {
     HelpRequesterQueue helpRequesterQueue = new HelpRequesterQueue(new ArrayList<>());
     DebuggingPartnerQueue debuggingPartnerQueue = new DebuggingPartnerQueue(new ArrayList<>());
     Server server = new Server(helpRequesterQueue, debuggingPartnerQueue);

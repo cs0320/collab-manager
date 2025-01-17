@@ -40,6 +40,8 @@ const Dashboard = () => {
 
   const [escalationResult, setEscalationResult] = useState("");
   const isMockedMode = useRecoilValue(mockedMode);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   // resets user session back to log in on unwanted backend interruptions
   useEffect(() => {
@@ -527,6 +529,8 @@ const Dashboard = () => {
   };
 
   const handleEscalate = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       console.log(singleSession.partner?.name, singleSession.partner?.email);
       await fetch(
@@ -546,10 +550,15 @@ const Dashboard = () => {
         });
     } catch (error) {
       console.error("ERROR: " + error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleEndSession = (role: UserRole) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     console.log("HANDLING END OF SESSION");
     // if (role === UserRole.DebuggingPartner) {
     //   removeFromQueue(
@@ -734,7 +743,8 @@ const Dashboard = () => {
                 Start Session
               </button>
             ) : (
-              <button className="end-button" onClick={handleEnd}>
+              <button className="end-button"  disabled={isSubmitting}
+              onClick={handleEnd}>
                 End Session
               </button>
             )}
@@ -809,7 +819,11 @@ const Dashboard = () => {
         //   Escalate!
         // </button>
         <div>
-          <button className="escalate-button" onClick={handleEscalate}>
+          <button
+            className="escalate-button"
+            disabled={isSubmitting}
+            onClick={handleEscalate}
+          >
             {" "}
             Escalate!{" "}
           </button>
