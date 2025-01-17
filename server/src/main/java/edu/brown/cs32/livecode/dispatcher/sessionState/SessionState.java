@@ -1,7 +1,11 @@
 package edu.brown.cs32.livecode.dispatcher.sessionState;
 
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
+
 /**
- * This class is the SessionState class that handles the metadata for this session.
+ * This class is the SessionState class that handles the metadata for this
+ * session.
  *
  * @author sarahridley juliazdzilowska rachelbrooks meganball
  * @version 1.0
@@ -11,6 +15,7 @@ public class SessionState {
   private String beginTime;
   private String endTime;
   private String answersFileName;
+  private final Lock lock = new ReentrantLock();
 
   /**
    * Constructor for the SessionState class
@@ -25,8 +30,9 @@ public class SessionState {
   /**
    * Constructor for the SessionState class
    *
-   * @param running boolean representing value of running field
-   * @param answersFileName String representing name of file to write answers to (if not default)
+   * @param running         boolean representing value of running field
+   * @param answersFileName String representing name of file to write answers to
+   *                        (if not default)
    */
   public SessionState(boolean running, String answersFileName) {
     this.running = running;
@@ -39,7 +45,12 @@ public class SessionState {
    * @param newRunning boolean representing new value for the running field
    */
   public synchronized void setRunning(boolean newRunning) {
-    running = newRunning;
+    lock.lock();
+    try {
+      this.running = newRunning;
+    } finally {
+      lock.unlock();
+    }
   }
 
   /**
@@ -48,7 +59,12 @@ public class SessionState {
    * @return boolean representing the running field
    */
   public synchronized boolean getRunning() {
-    return running;
+    lock.lock();
+    try {
+      return this.running;
+    } finally {
+      lock.unlock();
+    }
   }
 
   /**
@@ -57,7 +73,12 @@ public class SessionState {
    * @param newDateTime representing new value for the beginTime field
    */
   public synchronized void setBeginTime(String newDateTime) {
-    beginTime = newDateTime;
+    lock.lock();
+    try {
+      this.beginTime = newDateTime;
+    } finally {
+      lock.unlock();
+    }
   }
 
   /**
@@ -66,7 +87,12 @@ public class SessionState {
    * @return String representing the beginTime field
    */
   public synchronized String getBeginTime() {
-    return beginTime;
+    lock.lock();
+    try {
+      return this.beginTime;
+    } finally {
+      lock.unlock();
+    }
   }
 
   /**
@@ -75,7 +101,12 @@ public class SessionState {
    * @param newDateTime String representing new value for the endTime field
    */
   public synchronized void setEndTime(String newDateTime) {
-    endTime = newDateTime;
+    lock.lock();
+    try {
+      this.endTime = newDateTime;
+    } finally {
+      lock.unlock();
+    }
   }
 
   /**
@@ -84,7 +115,12 @@ public class SessionState {
    * @return String representing the endTime field
    */
   public synchronized String getEndTime() {
-    return endTime;
+    lock.lock();
+    try {
+      return this.endTime;
+    } finally {
+      lock.unlock();
+    }
   }
 
   /**
@@ -93,6 +129,11 @@ public class SessionState {
    * @return String representing the answersFileName field
    */
   public synchronized String getAnswersFileName() {
-    return answersFileName;
+    lock.lock();
+    try {
+      return this.answersFileName;
+    } finally {
+      lock.unlock();
+    }
   }
 }
