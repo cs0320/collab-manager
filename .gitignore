@@ -1,28 +1,28 @@
 # frontend ignored folders
-front/node_modules/
-front/src/private
-front/build/
+client/node_modules/
+client/src/private
+client/build/
 
 .vscode
 .idea/
 
 # backend ignored folders
-back/.idea/
-back/node_modules/
+server/.idea/
+server/node_modules/
 
 # Maven
-back/.mvn
-back/.mvn-classpath
-back/pom.xml.bak
-back/target
+server/.mvn
+server/.mvn-classpath
+server/pom.xml.bak
+server/target
 
 # Data
-back/data
+server/data
 
 # JKS information
-back/private.txt
-back/keystore.jks
-back/keystore.p12
+server/private.txt
+server/keystore.jks
+server/keystore.p12
 
 node_modules/
 
