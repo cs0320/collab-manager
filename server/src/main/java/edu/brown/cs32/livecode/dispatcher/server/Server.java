@@ -217,8 +217,9 @@ public class Server {
    */
   public static List<List<String>> parseCsvInstructors() {
     try {
+      String projectRoot = System.getProperty("user.dir");
       BufferedReader bufferedFile =
-          new BufferedReader(new FileReader("./data/instructor-list.csv"));
+          new BufferedReader(new FileReader(projectRoot + "/data/instructor-list.csv"));
       List<List<String>> parsed = new ArrayList<>();
 
       String line = bufferedFile.readLine();
