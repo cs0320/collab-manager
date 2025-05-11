@@ -40,4 +40,5 @@ public class TestServer {
       e.printStackTrace();
       Assertions.fail("Exception during parseCsvInstructors: " + e.getMessage());
     }
+  }
 }
