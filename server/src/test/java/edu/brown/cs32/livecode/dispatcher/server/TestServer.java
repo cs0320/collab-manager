@@ -33,7 +33,11 @@ public class TestServer {
   /** Test parse CSV Instructors */
   @Test
   public void testParseCsvInstructorsEmpty() {
-    List<List<String>> instructors = Server.parseCsvInstructors();
-    Assertions.assertEquals(List.of("Name", "Email"), instructors.get(0));
-  }
+    try {
+      List<List<String>> instructors = Server.parseCsvInstructors();
+      Assertions.assertEquals(List.of("Name", "Email"), instructors.get(0));
+    } catch (Exception e) {
+      e.printStackTrace();
+      Assertions.fail("Exception during parseCsvInstructors: " + e.getMessage());
+    }
 }
