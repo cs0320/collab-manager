@@ -15,7 +15,7 @@ public class StressTest {
             final int userId = i;
             executor.submit(() -> {
                 try {
-                    URL url = new URL("http://localhost:3333/addDebuggingPartner?name=User" + userId + "&email=user"
+                    URL url = new URL("http://localhost:3232/addDebuggingPartner?name=User" + userId + "&email=user"
                             + userId + "@example.com");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");

@@ -1,8 +1,8 @@
 import { atom } from "recoil";
 import { IUser } from "../types/IUser";
 
-// export const backend = "http://localhost:3333";
-export const backend = "https://cs0320-ci.cs.brown.edu:3333";
+// export const backend = "http://localhost:3232";
+export const backend = "https://cs0320-ci.cs.brown.edu:3232";
 
 export enum UserRole {
   Instructor = "instructor",

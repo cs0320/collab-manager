@@ -27,7 +27,7 @@ import spark.Spark;
 public class Server {
   static final String keystorePath = "keystore.jks";
   static final String keystorePasswordPath = "private.txt";
-  static final int port = 3333;
+  static final int port = 3232;
   static SessionState sessionState;
   private static final Object requestLock = new Object();
 
