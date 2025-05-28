@@ -1,3 +1,5 @@
+import React from "react";
+
 // timer used to display time remaining to students
 const Timer = ({
   fullTimeRemaining: fullTimeRemaining,

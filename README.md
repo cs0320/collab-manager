@@ -1,4 +1,8 @@
-# term-project-rdbrooks-meball-jzdzilow-sridley-
+# TODO
+- [] Switch from Firebase to Clerk
+- [] Make NextJS Application
+- [] Switch from Firestore to Prisma
+
 
 # Collab Section Manager
 
@@ -39,22 +43,22 @@ Finally, the utils directory contains the Utils class for time utility methods.
 
 Here is a breakdown of the API requests you can make directly to the backend endpoints:
 
-- http://localhost:3333/session?command=begin → begins the session
-- http://localhost:3333/session?command=end → ends the session
-- http://localhost:3333/addHelpRequester?name=_&email=_&bugType= → add a help requester by name
-- http://localhost:3333/helpRequesterDone?name=_&email=_&record= → remove a help requester by name
-- http://localhost:3333/helpRequesterDone?name=_&email=_&record=no → remove a help requester by name and remove them from the list tracking attendance
-- http://localhost:3333/addDebuggingPartner?name=_&email=_ → add a debugging partner by name
-- http://localhost:3333/debuggingPartnerDone?name=_&email=_&record= → remove a debugging partner by name
-- http://localhost:3333/debuggingPartnerDone?name=_&email=_&record=no → remove a debugging partner by name and remove them from the list tracking attendance
-- http://localhost:3333/getInfo → gets general information on the current state of the collab hours manager
-- http://localhost:3333/getInfo?role=debuggingPartner&name=_&email=_ → gets info on a specific debugging partner by name
-- http://localhost:3333/getInfo?role=helpRequester&name=_&email=_ → gets info on a specific help requester by name
-- http://localhost:3333/escalate?helpRequesterName=_&helpRequesterEmail=_ → escalate a help requester by name
-- http://localhost:3333/flagAndRematch?helpRequesterName=_&helpRequesterEmail=_&debuggingPartnerName=_&debuggingPartnerEmail=_ → rematch and flag debugging partner and help requester by name
-- http://localhost:3333/isInstructor?email= → determine if a given email is considered a TA based on csv
-- http://localhost:3333/submitDebuggingQuestions?debuggingPartnerName=_&debuggingPartnerEmail=_&helpRequesterName=_&helpRequesterEmail=_&bugCategory=_&debuggingProcess=_ → submit debugging questions
-- http://localhost:3333/downloadInfo?type=\_ → downloads CSV info based on type (all, debugging, helpRequester)
+- http://localhost:3232/session?command=begin → begins the session
+- http://localhost:3232/session?command=end → ends the session
+- http://localhost:3232/addHelpRequester?name=_&email=_&bugType= → add a help requester by name
+- http://localhost:3232/helpRequesterDone?name=_&email=_&record= → remove a help requester by name
+- http://localhost:3232/helpRequesterDone?name=_&email=_&record=no → remove a help requester by name and remove them from the list tracking attendance
+- http://localhost:3232/addDebuggingPartner?name=_&email=_ → add a debugging partner by name
+- http://localhost:3232/debuggingPartnerDone?name=_&email=_&record= → remove a debugging partner by name
+- http://localhost:3232/debuggingPartnerDone?name=_&email=_&record=no → remove a debugging partner by name and remove them from the list tracking attendance
+- http://localhost:3232/getInfo → gets general information on the current state of the collab hours manager
+- http://localhost:3232/getInfo?role=debuggingPartner&name=_&email=_ → gets info on a specific debugging partner by name
+- http://localhost:3232/getInfo?role=helpRequester&name=_&email=_ → gets info on a specific help requester by name
+- http://localhost:3232/escalate?helpRequesterName=_&helpRequesterEmail=_ → escalate a help requester by name
+- http://localhost:3232/flagAndRematch?helpRequesterName=_&helpRequesterEmail=_&debuggingPartnerName=_&debuggingPartnerEmail=_ → rematch and flag debugging partner and help requester by name
+- http://localhost:3232/isInstructor?email= → determine if a given email is considered a TA based on csv
+- http://localhost:3232/submitDebuggingQuestions?debuggingPartnerName=_&debuggingPartnerEmail=_&helpRequesterName=_&helpRequesterEmail=_&bugCategory=_&debuggingProcess=_ → submit debugging questions
+- http://localhost:3232/downloadInfo?type=\_ → downloads CSV info based on type (all, debugging, helpRequester)
 
 # Errors/Bugs
 
@@ -82,7 +86,7 @@ To build and run the program, you must run the backend and frontend separately. 
 
 To run the frontend, `cd front` to get into the front directory. Then run `npm install` to install dependencies, and then `npm start` to run the frontend locally in port 3000 by default.
 
-To run the backend, `cd back` to get into the back directory. Then run `mvn compile exec:java` to run the backend locally in port 3333 by default.
+To run the backend, `cd back` to get into the back directory. Then run `mvn compile exec:java` to run the backend locally in port 3232 by default.
 
 ## Run the Tests
 

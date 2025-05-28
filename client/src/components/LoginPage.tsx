@@ -10,6 +10,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 // Import functions needed from appropriate SDKs
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../private/FirebaseAPI";
+import React from "react";
 
 // using login email, determine if instructor by calling backend
 function getRoleFromBackend(email: string): Promise<string> {

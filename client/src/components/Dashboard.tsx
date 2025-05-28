@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import Timer from "./Timer";
 import "../styles/nightsky.scss";
 import { IUser } from "../types/IUser";
+import React from "react";
 //import * as FileSaver from "file-saver";
 
 const Dashboard = () => {
@@ -41,7 +42,6 @@ const Dashboard = () => {
   const [escalationResult, setEscalationResult] = useState("");
   const isMockedMode = useRecoilValue(mockedMode);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   // resets user session back to log in on unwanted backend interruptions
   useEffect(() => {
@@ -743,8 +743,11 @@ const Dashboard = () => {
                 Start Session
               </button>
             ) : (
-              <button className="end-button"  disabled={isSubmitting}
-              onClick={handleEnd}>
+              <button
+                className="end-button"
+                disabled={isSubmitting}
+                onClick={handleEnd}
+              >
                 End Session
               </button>
             )}
