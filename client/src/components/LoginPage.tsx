@@ -1,6 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/LoginPage.css";
 import { useSetRecoilState } from "recoil";
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useUser,
+} from "@clerk/clerk-react";
 import { backend, userSessionState } from "../recoil/atoms";
 import { UserRole } from "../recoil/atoms";
 import { IUser } from "../types/IUser";
@@ -196,14 +203,21 @@ const LoginPage = () => {
     }
   };
 
+  const { user, isSignedIn } = useUser();
+
   // two different displays depending on if mocked mode
+  if (isSignedIn) {
+    navigate("/dashboard");
+  }
+
   return (
     <div className="login-body">
       <div className="login-container">
         <h1>Welcome to Collab Section</h1>
-        <button onClick={signInWithGoogle} className="btn">
-          Sign In With Google
-        </button>
+
+        <SignInButton mode="modal" fallbackRedirectUrl="/dashboard">
+          <button className="btn">Sign In With Google</button>
+        </SignInButton>
       </div>
     </div>
   );
